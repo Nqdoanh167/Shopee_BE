@@ -12,8 +12,8 @@ const getAllByCondition = async (filter = {}) => {
 const getUserByCondition = async (filter = {}) => {
    return await User.findOne(filter);
 };
-const createUser = async ({email, password, name, dob}) => {
-   return await User.create({email, password, name, dob});
+const createUser = async (data) => {
+   return await User.create(data);
 };
 
 const deleteUser = async (filter = {}) => {

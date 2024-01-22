@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const STATUS_CODE = require('../constants/httpResponseCode');
 const HTTP_MESSAGE = require('../constants/httpErrorMessage');
 dotenv.config();
+
 const authMiddleWare = (req, res, next) => {
    const bearToken = req.headers?.authorization;
    if (!bearToken) {
@@ -43,7 +44,7 @@ const authUserMiddleWare = (req, res, next) => {
    if (!bearToken) {
       return res.status(STATUS_CODE.BAD_REQUEST).json({
          error: true,
-         message: 'Vui lòng truyền token',
+         message: HTTP_MESSAGE.TOKEN_IS_REQUIRE,
       });
    }
    const token = bearToken?.split(' ')[1];

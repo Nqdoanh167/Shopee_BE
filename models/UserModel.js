@@ -5,7 +5,7 @@ var mongoose_delete = require('mongoose-delete');
 const userSchema = new mongoose.Schema(
    {
       name: {type: String},
-      email: {type: String, required: true, unique: true},
+      email: {type: String, required: true},
       password: {type: String, required: true},
       dob: {type: Date},
       isAdmin: {type: Boolean, default: false, required: true},
@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
    },
 );
 
-userSchema.plugin(mongoose_delete, {deletedAt: true});
-userSchema.plugin(mongoose_delete, {overrideMethods: 'all'});
+// userSchema.plugin(mongoose_delete, {deletedAt: true});
+// userSchema.plugin(mongoose_delete, {overrideMethods: 'all'});
 const User = mongoose.model('User', userSchema);
 module.exports = User;

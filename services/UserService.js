@@ -21,7 +21,6 @@ const createUser = async (data) => {
       email,
       status: 2,
    });
-
    if (user) {
       return {
          error: true,
@@ -40,13 +39,11 @@ const createUser = async (data) => {
          email: email,
       });
    }
-
    const newUser = await UserRepo.createUser({
       email,
       password: Util.hashPw(password),
       status: 1,
    });
-
    const access_token = await JwtService.genneralAccessToken({
       id: newUser._id,
    });
@@ -69,7 +66,7 @@ const signupConfirm = async (data) => {
       _id: id,
    });
    if (user) {
-      await UserRepo.updateUserById(id, {status: 2});
+      await UserRepo.updateUser({_id: id}, {status: 2});
       return {
          message: HTTP_MESSAGE.SUCCESS,
       };
@@ -140,8 +137,8 @@ const UpdateUser = async (id, data, avatar) => {
          message: HTTP_MESSAGE.NOT_EXISTED_USER,
       };
    }
-   const updateUser = await UserRepo.updateUserById(
-      id,
+   const updateUser = await UserRepo.updateUser(
+      {_id: id},
       {
          name,
          dob,
@@ -152,9 +149,16 @@ const UpdateUser = async (id, data, avatar) => {
       },
       {new: true},
    );
+   if (updateUser) {
+      return {
+         message: HTTP_MESSAGE.UPDATE_USER_SUCCESS,
+         data: updateUser,
+      };
+   }
    return {
-      message: HTTP_MESSAGE.UPDATE_USER_SUCCESS,
-      data: updateUser,
+      error: true,
+      code: STATUS_CODE.BAD_REQUEST,
+      message: HTTP_MESSAGE.ERROR,
    };
 };
 const UpdateStatusUser = async (id, data) => {
@@ -185,7 +189,13 @@ const DeleteUser = async (id) => {
       };
    }
 
-   await UserRepo.deleteUser({_id: ids});
+   await UserRepo.deleteUser({_id: id});
+   return {
+      message: HTTP_MESSAGE.DELETE_USER_SUCCESS,
+   };
+};
+const deleteMany = async (ids) => {
+   await UserRepo.deleteManyUser({_id: ids});
    return {
       message: HTTP_MESSAGE.DELETE_USER_SUCCESS,
    };
@@ -211,13 +221,8 @@ const getDetailUser = async (id) => {
       data: user,
    };
 };
-const deleteMany = async (ids) => {
-   await UserRepo.deleteManyUser({_id: ids});
-   return {
-      message: HTTP_MESSAGE.DELETE_USER_SUCCESS,
-   };
-};
-const authService = {
+
+const UserService = {
    createUser,
    signupConfirm,
    Login,
@@ -228,4 +233,4 @@ const authService = {
    getDetailUser,
    deleteMany,
 };
-module.exports = authService;
+module.exports = UserService;

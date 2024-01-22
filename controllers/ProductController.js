@@ -1,12 +1,11 @@
 /** @format */
-
 const HTTP_MESSAGE = require('../constants/httpErrorMessage');
 const STATUS_CODE = require('../constants/httpResponseCode');
-const UserService = require('../services/UserService');
-const Register = async (req, res) => {
-   try {
-      const data = await UserService.createUser(req.body);
+const ProductService = require('../services/ProductService');
 
+const createProduct = async (req, res) => {
+   try {
+      const data = await ProductService.createProduct(req.body, req.file?.filename);
       if (data?.error) {
          return res.status(data?.code).json(data?.message);
       }
@@ -17,41 +16,15 @@ const Register = async (req, res) => {
       });
    }
 };
-const Confirm = async (req, res) => {
+const updateProduct = async (req, res) => {
    try {
-      const data = await UserService.signupConfirm(req.query);
-      if (data?.error) {
-         return res.status(data?.code).json(data?.message);
-      }
-      return res.status(STATUS_CODE.CREATED).json(data?.message);
-   } catch (e) {
-      return res.status(e?.status || STATUS_CODE.ERROR_SERVER).json({
-         message: e,
-      });
-   }
-};
-const Login = async (req, res) => {
-   try {
-      const data = await UserService.Login(req.body);
-      if (data?.error) {
-         return res.status(data?.code).json(data?.message);
-      }
-      return res.status(STATUS_CODE.SUCCESS).json(data);
-   } catch (e) {
-      return res.status(e?.status || STATUS_CODE.ERROR_SERVER).json({
-         message: e,
-      });
-   }
-};
-const UpdateUser = async (req, res) => {
-   try {
-      const idUser = req?.params?.id;
-      if (!idUser) {
+      const idProduct = req.params.id;
+      if (!idProduct) {
          return res.status(STATUS_CODE.BAD_REQUEST).json({
             message: HTTP_MESSAGE.ID_IS_REQUIRE,
          });
       }
-      const data = await UserService.UpdateUser(idUser, req.body, req.avatar?.filename);
+      const data = await ProductService.updateProduct(idProduct, req.body, req.file?.filename);
       if (data?.error) {
          return res.status(data?.code).json(data?.message);
       }
@@ -62,66 +35,15 @@ const UpdateUser = async (req, res) => {
       });
    }
 };
-const UpdateStatusUser = async (req, res) => {
+const deleteProduct = async (req, res) => {
    try {
-      const idUser = req.params.id;
-      if (!idUser) {
+      const idProduct = req.params.id;
+      if (!idProduct) {
          return res.status(STATUS_CODE.BAD_REQUEST).json({
             message: HTTP_MESSAGE.ID_IS_REQUIRE,
          });
       }
-      const data = await UserService.UpdateStatusUser(idUser, req.body);
-      if (data?.error) {
-         return res.status(data?.code).json(data?.message);
-      }
-      return res.status(STATUS_CODE.SUCCESS).json(data);
-   } catch (e) {
-      return res.status(e?.status || STATUS_CODE.ERROR_SERVER).json({
-         message: e,
-      });
-   }
-};
-const DeleteUser = async (req, res) => {
-   try {
-      const idUser = req.params.id;
-      if (!idUser) {
-         return res.status(STATUS_CODE.BAD_REQUEST).json({
-            message: HTTP_MESSAGE.ID_IS_REQUIRE,
-         });
-      }
-      const data = await UserService.DeleteUser(idUser);
-      if (data?.error) {
-         return res.status(data?.code).json(data?.message);
-      }
-      return res.status(STATUS_CODE.SUCCESS).json(data);
-   } catch (e) {
-      return res.status(e?.status || STATUS_CODE.ERROR_SERVER).json({
-         message: e,
-      });
-   }
-};
-const getAllUser = async (req, res) => {
-   try {
-      const data = await UserService.getAllUser();
-      if (data?.error) {
-         return res.status(data?.code).json(data?.message);
-      }
-      return res.status(STATUS_CODE.SUCCESS).json(data);
-   } catch (e) {
-      return res.status(e?.status || STATUS_CODE.ERROR_SERVER).json({
-         message: e,
-      });
-   }
-};
-const getDetailUser = async (req, res) => {
-   try {
-      const idUser = req.params.id;
-      if (!idUser) {
-         return res.status(STATUS_CODE.BAD_REQUEST).json({
-            message: HTTP_MESSAGE.ID_IS_REQUIRE,
-         });
-      }
-      const data = await UserService.getDetailUser(idUser);
+      const data = await ProductService.deleteProduct(idProduct);
       if (data?.error) {
          return res.status(data?.code).json(data?.message);
       }
@@ -140,7 +62,52 @@ const deleteMany = async (req, res) => {
             message: HTTP_MESSAGE.IDS_IS_REQUIRE,
          });
       }
-      const data = await UserService.deleteMany(ids);
+      const data = await ProductService.deleteMany(ids);
+      if (data?.error) {
+         return res.status(data?.code).json(data?.message);
+      }
+      return res.status(STATUS_CODE.SUCCESS).json(data);
+   } catch (e) {
+      return res.status(e?.status || STATUS_CODE.ERROR_SERVER).json({
+         message: e,
+      });
+   }
+};
+const getDetailProduct = async (req, res) => {
+   try {
+      const idProduct = req.params.id;
+      if (!idProduct) {
+         return res.status(STATUS_CODE.BAD_REQUEST).json({
+            message: HTTP_MESSAGE.ID_IS_REQUIRE,
+         });
+      }
+      const data = await ProductService.getDetailProduct(idProduct);
+      if (data?.error) {
+         return res.status(data?.code).json(data?.message);
+      }
+      return res.status(STATUS_CODE.SUCCESS).json(data);
+   } catch (e) {
+      return res.status(e?.status || STATUS_CODE.ERROR_SERVER).json({
+         message: e,
+      });
+   }
+};
+const getAllProduct = async (req, res) => {
+   try {
+      const data = await ProductService.getAllProduct();
+      if (data?.error) {
+         return res.status(data?.code).json(data?.message);
+      }
+      return res.status(STATUS_CODE.SUCCESS).json(data);
+   } catch (e) {
+      return res.status(e?.status || STATUS_CODE.ERROR_SERVER).json({
+         message: e,
+      });
+   }
+};
+const getAllCategory = async (req, res) => {
+   try {
+      const data = await ProductService.getAllCategory();
       if (data?.error) {
          return res.status(data?.code).json(data?.message);
       }
@@ -152,13 +119,11 @@ const deleteMany = async (req, res) => {
    }
 };
 module.exports = {
-   Register,
-   Confirm,
-   UpdateUser,
-   Login,
-   DeleteUser,
-   UpdateStatusUser,
-   getAllUser,
-   getDetailUser,
+   createProduct,
+   updateProduct,
+   deleteProduct,
+   getDetailProduct,
+   getAllProduct,
    deleteMany,
+   getAllCategory,
 };
