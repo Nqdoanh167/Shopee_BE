@@ -4,14 +4,9 @@ const STATUS_CODE = require('../constants/httpResponseCode');
 const OrderService = require('../services/OrderService');
 
 const createOrder = async (req, res) => {
+   const userId = req.params.id;
    try {
-      const idUser = req.params.id;
-      if (!idProduct) {
-         return res.status(STATUS_CODE.BAD_REQUEST).json({
-            message: HTTP_MESSAGE.ID_IS_REQUIRE,
-         });
-      }
-      const data = await OrderService.createOrder(req.body);
+      const data = await OrderService.createOrder(req.body, userId);
       if (data?.error) {
          return res.status(data?.code).json(data?.message);
       }

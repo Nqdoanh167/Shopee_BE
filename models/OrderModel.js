@@ -11,6 +11,7 @@ const orderSchema = new mongoose.Schema(
       address: {type: String, required: true},
       phone: {type: String, required: true},
       costShip: {type: Number, required: true},
+      note: {type: String, required: true},
       isPaid: {type: Boolean, default: false},
       paidAt: {type: Date},
       isDelivered: {type: Boolean, default: false},

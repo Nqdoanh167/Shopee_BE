@@ -4,7 +4,7 @@ const HTTP_MESSAGE = {
    SUCCESS: 'Thành công',
    ERROR: 'Thất bại',
    // body
-   THE_INPUT_IS_REQUIRE: 'Vui lòng điền vào mục này.',
+   THE_INPUT_IS_REQUIRE: 'Nhập thiếu.',
    EMAIL_NOT_VERIFY: 'Email chưa đúng định dạng.',
    PASSWORD_NOT_VERIFY: 'password chưa đúng định dạng.',
 

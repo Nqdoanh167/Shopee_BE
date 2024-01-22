@@ -1,49 +1,82 @@
 /** @format */
+const CONST_APP = require('../constants/constant');
 const HTTP_MESSAGE = require('../constants/httpErrorMessage');
 const STATUS_CODE = require('../constants/httpResponseCode');
 const ProductRepo = require('../repositories/ProductRepo');
-const createOrder = async (data) => {
-   const {fullname, address, phone, costShip, paymentMethod} = data;
-   if (!fullname || !address || !phone || !costShip || !paymentMethod) {
+const OrderRepo = require('../repositories/OrderRepo');
+const OrderProductRepo = require('../repositories/OrderProductRepo');
+
+const createOrder = async (data, userId) => {
+   const {fullname, address, phone, paymentMethod, costShip, note, orderProduct} = data;
+   if (!fullname || !address || !phone || !paymentMethod || !costShip || !note) {
       return {
          error: true,
          code: STATUS_CODE.BAD_REQUEST,
          message: HTTP_MESSAGE.THE_INPUT_IS_REQUIRE,
       };
    }
-
-   const product = await ProductRepo.getProductByCondition({
-      name: name,
-   });
-
-   if (product) {
+   if (!CONST_APP.TypePaymentEnum[paymentMethod]) {
       return {
          error: true,
          code: STATUS_CODE.BAD_REQUEST,
-         message: HTTP_MESSAGE.EXISTED_PRODUCT,
+         message: 'Type payment không đúng',
       };
    }
 
-   const newProduct = await ProductRepo.createProduct({
-      name,
-      image,
-      category,
-      price,
-      countInStock,
-      description,
-      discount,
+   const ids = orderProduct.map((p, index) => p.productId);
+   const allProduct = await ProductRepo.getAllByCondition({
+      _id: {$in: ids},
    });
-   if (newProduct) {
+   // const allProduct = await Promise.all(orderProduct.map((p, index) => ProductRepo.getProductById(p.productId)));
+
+   if (allProduct.length !== ids.length) {
       return {
-         message: HTTP_MESSAGE.SUCCESS,
-         data: newProduct,
+         error: true,
+         code: STATUS_CODE.BAD_REQUEST,
+         message: 'Truyền sai productId hoặc truyền giống nhau',
       };
    }
-   return {
-      error: true,
-      code: STATUS_CODE.BAD_REQUEST,
-      message: HTTP_MESSAGE.ERROR,
-   };
+   if (
+      orderProduct.some((p) => {
+         const dbProduct = allProduct.find((db) => db._id.toString() == p.productId);
+         return dbProduct.price != p.price;
+      })
+   ) {
+      return {
+         error: true,
+         code: STATUS_CODE.BAD_REQUEST,
+         message: 'Truyền sai giá',
+      };
+   }
+
+   const newOrder = await OrderRepo.createOrder({
+      totalMoney: orderProduct.reduce((prev, curr) => {
+         prev = +curr.price * +curr.amount + prev;
+         return prev;
+      }, 0),
+      paymentMethod,
+      userId,
+      fullname,
+      address,
+      phone,
+      costShip,
+      note,
+   });
+   const newOrderProduct = await Promise.all(
+      orderProduct.map((p) =>
+         OrderProductRepo.createOrderProduct({
+            productId: p.productId,
+            price: p.price,
+            amount: p.amount,
+            orderId: newOrder._id,
+         }),
+      ),
+   );
+   if (newOrder && newOrderProduct) {
+      return {
+         message: HTTP_MESSAGE.SUCCESS,
+      };
+   }
 };
 
 const OrderService = {
