@@ -3,6 +3,9 @@
 const HTTP_MESSAGE = {
    SUCCESS: 'Thành công',
    ERROR: 'Thất bại',
+   //auth
+   TOKEN_IS_REQUIRE: 'Vui lòng truyền token',
+   AUTHENTICATION: 'The authentication',
    // body
    THE_INPUT_IS_REQUIRE: 'Nhập thiếu.',
    EMAIL_NOT_VERIFY: 'Email chưa đúng định dạng.',
@@ -29,9 +32,14 @@ const HTTP_MESSAGE = {
    GET_ALL_PRODUCT_SUCCESS: 'Lấy tất cả thông tin sản phẩm thành công',
    GET_PRODUCT_SUCCESS: 'Lấy thông tin sản phẩm thành công',
    GET_ALL_CATEGORY_PRODUCT_SUCCESS: 'Lấy tất cả category thành công',
-   //auth
-   TOKEN_IS_REQUIRE: 'Vui lòng truyền token',
-   AUTHENTICATION: 'The authentication',
+
+   //order
+   NOT_EXISTED_ORDER: 'Order chưa tồn tại',
+   EXISTED_ORDER: 'Order đã tồn tại',
+   UPDATE_ORDER_SUCCESS: 'Cập nhật Order thành công',
+   DELETE_ORDER_SUCCESS: 'Xóa Order thành công',
+   GET_ALL_ORDER_SUCCESS: 'Lấy tất cả thông tin Order thành công',
+   GET_ORDER_SUCCESS: 'Lấy thông tin Order thành công',
 };
 
 module.exports = HTTP_MESSAGE;

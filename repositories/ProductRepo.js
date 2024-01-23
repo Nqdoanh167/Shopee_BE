@@ -23,7 +23,7 @@ const deleteManyProduct = async (filter = {}) => {
    return await Product.deleteMany(filter);
 };
 const updateProduct = async (filter, data, options) => {
-   return await Product.updateOne(filter, data, options);
+   return await Product.findOneAndUpdate(filter, data, options);
 };
 
 const ProductRepo = {
