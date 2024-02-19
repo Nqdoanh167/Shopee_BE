@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 routers(app);
-const db = 'mongodb://localhost:27017/shopee';
+const db = 'mongodb+srv://nqdcntt2002:doanh2002716@shopee.kpxwzh2.mongodb.net/';
 const connect = async () => {
    await mongoose.connect(db);
    console.log('Connect DB Success!');
