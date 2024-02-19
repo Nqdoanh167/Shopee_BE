@@ -93,8 +93,9 @@ const getDetailProduct = async (req, res) => {
    }
 };
 const getAllProduct = async (req, res) => {
+   const {filter} = req.query;
    try {
-      const data = await ProductService.getAllProduct();
+      const data = await ProductService.getAllProduct(filter);
       if (data?.error) {
          return res.status(data?.code).json(data?.message);
       }

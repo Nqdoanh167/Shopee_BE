@@ -16,7 +16,20 @@ const createUser = async (data) => {
          message: HTTP_MESSAGE.THE_INPUT_IS_REQUIRE,
       };
    }
-
+   if (!Util.isCheckEmail(email)) {
+      return {
+         error: true,
+         code: STATUS_CODE.BAD_REQUEST,
+         message: HTTP_MESSAGE.EMAIL_NOT_VERIFY,
+      };
+   }
+   if (password.length < 5) {
+      return {
+         error: true,
+         code: STATUS_CODE.BAD_REQUEST,
+         message: 'Password tối thiểu 5 ký tự',
+      };
+   }
    const user = await UserRepo.getUserByCondition({
       email,
       status: 2,
@@ -94,6 +107,13 @@ const Login = async (data) => {
          message: HTTP_MESSAGE.EMAIL_NOT_VERIFY,
       };
    }
+   if (password.length < 5) {
+      return {
+         error: true,
+         code: STATUS_CODE.BAD_REQUEST,
+         message: 'Password tối thiểu 5 ký tự',
+      };
+   }
    const user = await UserRepo.getUserByCondition({
       status: 2,
       email,
@@ -129,7 +149,6 @@ const Login = async (data) => {
 };
 const UpdateUser = async (id, data, avatar) => {
    const user = await UserRepo.getUserById(id);
-   const {name, dob, address, phone, password} = data;
    if (!user) {
       return {
          error: true,
@@ -137,15 +156,16 @@ const UpdateUser = async (id, data, avatar) => {
          message: HTTP_MESSAGE.NOT_EXISTED_USER,
       };
    }
+   const {name, dob, address, phone} = data;
+
    const updateUser = await UserRepo.updateUser(
       {_id: id},
       {
-         name,
-         dob,
-         address,
-         phone,
-         password: Util.hashPw(password),
-         avatar,
+         name: name ? name : user?.name,
+         dob: dob ? dob : user?.dob,
+         address: address ? address : user?.address,
+         phone: phone ? phone : user?.phone,
+         avatar: avatar ? avatar : user?.avatar,
       },
       {new: true},
    );

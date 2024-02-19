@@ -110,7 +110,14 @@ const getDetailProduct = async (id) => {
       data: product,
    };
 };
-const getAllProduct = async () => {
+const getAllProduct = async (filter) => {
+   if (filter) {
+      const listProduct = await ProductRepo.getAllByCondition({category: filter});
+      return {
+         message: HTTP_MESSAGE.GET_ALL_PRODUCT_SUCCESS,
+         data: listProduct,
+      };
+   }
    const listProduct = await ProductRepo.getAllByCondition();
    return {
       message: HTTP_MESSAGE.GET_ALL_PRODUCT_SUCCESS,

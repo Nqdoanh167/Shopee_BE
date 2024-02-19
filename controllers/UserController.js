@@ -51,6 +51,7 @@ const UpdateUser = async (req, res) => {
             message: HTTP_MESSAGE.ID_IS_REQUIRE,
          });
       }
+      console.log('check', req.avatar);
       const data = await UserService.UpdateUser(idUser, req.body, req.avatar?.filename);
       if (data?.error) {
          return res.status(data?.code).json(data?.message);

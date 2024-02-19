@@ -7,8 +7,8 @@ const OrderRepo = require('../repositories/OrderRepo');
 const OrderProductRepo = require('../repositories/OrderProductRepo');
 
 const createOrder = async (data, userId) => {
-   const {fullname, address, phone, paymentMethod, costShip, note, orderProducts} = data;
-   if (!fullname || !address || !phone || !paymentMethod || !costShip || !note) {
+   const {fullname, address, phone, paymentMethod, costShip, orderProducts, note} = data;
+   if (!fullname || !address || !phone || !paymentMethod || !orderProducts) {
       return {
          error: true,
          code: STATUS_CODE.BAD_REQUEST,
@@ -50,6 +50,7 @@ const createOrder = async (data, userId) => {
       };
    }
    let listOrderProduct = [...orderProducts];
+
    const check = await Promise.all(
       orderProducts.map(async (p) => {
          const product = await ProductRepo.updateProduct(
@@ -81,10 +82,11 @@ const createOrder = async (data, userId) => {
          }
       }),
    );
+
    if (listOrderProduct.length) {
       const newOrder = await OrderRepo.createOrder({
          totalMoney: listOrderProduct.reduce((prev, curr) => {
-            prev = +curr.price * +curr.amount + prev;
+            prev = curr.price * curr.amount + prev;
             return prev;
          }, 0),
          paymentMethod,
@@ -105,6 +107,7 @@ const createOrder = async (data, userId) => {
             }),
          ),
       );
+
       if (newOrder && newOrderProduct) {
          return {
             message: HTTP_MESSAGE.SUCCESS,
@@ -112,6 +115,7 @@ const createOrder = async (data, userId) => {
          };
       }
    }
+
    return {
       error: true,
       code: STATUS_CODE.BAD_REQUEST,
