@@ -12,7 +12,10 @@ app.use(cors()); // Allow requests from any IP
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-routers(app);
+// routers(app);
+app.get('/', (req, res) => {
+   return res.send('GET request to the homepage');
+});
 const db = 'mongodb+srv://nqdcntt2002:doanh2002716@shopee.kpxwzh2.mongodb.net/shopee_new';
 // const db = 'mongodb://localhost:27017/shopee';
 const connect = async () => {
