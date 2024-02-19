@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/UserController.js');
-const multerUtil = require('../util/multer');
+const multerUtil = require('../util/multer.js');
 const {authUserMiddleWare, authMiddleWare} = require('../middleware/authMiddleware.js');
 router.post('/', UserController.Register);
 router.get('/register-confirm', UserController.Confirm);
